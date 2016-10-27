@@ -18,6 +18,34 @@
   padding: 50px;
 }
 
+.col-md-3 {
+  height: 50%;
+}
+
+#step1 {
+  background-image: url("../images/left.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+#step2 {
+  background-image: url("../images/up.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+#step3 {
+  background-image: url("../images/down.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+#step4 {
+  background-image: url("../images/right.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
 .step-tag {
   padding-left: 50px;
   font-size: 24px;
