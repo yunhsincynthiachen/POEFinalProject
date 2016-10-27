@@ -1,6 +1,10 @@
 socket.on('data', function (data) {
-	var box = document.getElementById('step' + data);
+	var box = document.getElementById('step' + String(data).charAt(0));
 
-	box.style.backgroundColor = 'black';
+	if (String(data).charAt(1) == 0) {
+		box.style.backgroundColor = 'black';
+	} else {
+		box.style.backgroundColor = 'none';
+	}
 	step = data;
 });
