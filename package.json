@@ -4,12 +4,12 @@
   "description": "",
   "main": "app.js",
   "dependencies": {
-    "express": "^4.1.0",
+    "express": "^4.14.0",
     "serialport": "^4.0.3",
     "socket.io": "^0.9.16"
   },
-  "scripts" :{
-    "start" : "node app.js"
+  "scripts": {
+    "start": "node app.js"
   },
   "devDependencies": {},
   "author": "Cynthia Chen, Casey Alvarado, Bill Du, Nora Mohamed",
