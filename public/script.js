@@ -4,7 +4,7 @@ socket.on('data', function (data) {
 	if (String(data).charAt(1) == 0) {
 		box.style.backgroundColor = 'black';
 	} else {
-		box.style.backgroundColor = 'none';
+		box.style.backgroundColor = '#800080';
 	}
 	step = data;
 });

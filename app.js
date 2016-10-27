@@ -7,7 +7,7 @@ var io = require('socket.io').listen(server);
 
 app.use(express.static(__dirname + '/public'));
 
-var serialport = new SerialPort("/dev/ttyACM0"); // replace this address with your port address
+var serialport = new SerialPort("/dev/ttyACM1"); // replace this address with your port address
 serialport.on('open', function(){
 	// Now server is connected to Arduino
 	console.log('Serial Port Opened');
