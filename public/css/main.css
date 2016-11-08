@@ -1,3 +1,4 @@
+
 .button {
   background-color: Transparent;
   border: none;
@@ -19,28 +20,38 @@
 }
 
 .col-md-3 {
-  height: 50%;
+  position: absolute;
+  height: 20%;
+  width: 150px;
 }
 
-#step1 {
+.moving {
+  top: 600px;
+}
+
+#left {
+  left: 12.5%;
   background-image: url("../images/left.png");
   background-size: contain;
   background-repeat: no-repeat;
 }
 
-#step2 {
+#up {
+  left: 32.5%;
   background-image: url("../images/up.png");
   background-size: contain;
   background-repeat: no-repeat;
 }
 
-#step3 {
+#down {
+  left: 52.5%;
   background-image: url("../images/down.png");
   background-size: contain;
   background-repeat: no-repeat;
 }
 
-#step4 {
+#right {
+  left: 72.5%;
   background-image: url("../images/right.png");
   background-size: contain;
   background-repeat: no-repeat;
@@ -63,4 +74,9 @@
   width: 100%;
   height: 100%;
   background-color: #800080;
+}
+
+#score {
+  color: black;
+  font-size: 48px;
 }

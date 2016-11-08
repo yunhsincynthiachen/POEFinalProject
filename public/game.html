@@ -12,8 +12,11 @@
 	<link href="css/main.css" rel="stylesheet">
 	<link rel="shortcut icon" href="images/ddricon.png">
 
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 	<script src="/bower_components/socket.io-client/dist/socket.io.min.js"></script>
 	<script src="/bower_components/Processing.js/processing.min.js"></script>
+  <script src="/bower_components/gsap/src/uncompressed/TweenLite.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.19.0/TweenMax.min.js"></script>
 	<script>
 		var socket = io.connect('http://localhost');
 		var step = 0;
@@ -21,21 +24,23 @@
 </head>
 <body>
 	<div class="container background">
-		<h1 class="game-header">POE DDR</h1>
+		<h1 class="game-header">POE DDR Score: <span id="score">0</span> <span id="scoreChange"></span></h1>
 		<div class="row">
-			<div class="col-md-3" id="step1">
+			<div class="col-md-3" id="left">
 				<!-- <p class="step-tag">Left Step #: <span id="step 1"></span></p> -->
 			</div>
-			<div class="col-md-3" id="step2">
+			<div class="col-md-3" id="down">
 				<!-- <p class="step-tag">Up Step #: <span id="step 2"></span></p> -->
 			</div>
-			<div class="col-md-3" id="step3">
+			<div class="col-md-3" id="up">
 				<!-- <p class="step-tag">Down Step #: <span id="step 3"></span></p> -->
 			</div>
-			<div class="col-md-3" id="step4">
+			<div class="col-md-3" id="right">
 				<!-- <p class="step-tag">Right Step #: <span id="step 4"></span></p> -->
 			</div>
 		</div>
+    <div class="row" id="row-moving">
+    </div>
 	</div>
 	<script type="text/javascript" src="script.js"></script>
 </body>
