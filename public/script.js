@@ -1,26 +1,31 @@
-// socket.on('data', function (data) {
-// 	var box = document.getElementById('step' + String(data).charAt(0));
-//
-// 	if (String(data).charAt(1) == 0) {
-// 		box.style.backgroundColor = 'black';
-// 	} else {
-// 		box.style.backgroundColor = '#800080';
-// 	}
-// 	step = data;
-// });
-
+var stepOrderSet= ["left", "down", "up", "right"];
 var map = {37: false, 38: false, 40: false, 39: false};
+
 var stepKey = {"left":37, "up":38, "down":40, "right":39};
 var stepReverseKey = {37:"left", 38:"up", 40:"down", 39:"right"};
 
-var stepOrder = ["left", "right", "up", "down", "up", "left"];
+var stepOrder = ["left", "down", "down", "down", "left", "left"];
 var stepNum = 0;
 var myVar = '<div class="col-md-3 moving '+stepOrder[stepNum]+'" id="'+stepOrder[stepNum]+'"></div>';
 var rowDiv = $('#row-moving');
-
 rowDiv.append(myVar);
 
 var shuttle1 = $('.'+stepOrder[stepNum]);
+
+socket.on('data', function (data) {
+	console.log(data);
+	for (var j = 1; j < data.toString().length; j++) {
+		if (data.toString().charAt(j) == 1) {
+			map[j+36] = true;
+			console.log(stepOrderSet[j-1]);
+			$('#' + stepOrderSet[j-1]).css({"backgroundColor": "black"});
+		} else {
+			map[j+36] = false;
+			$('#' + stepOrderSet[j-1]).css({"backgroundColor": "#800080"});
+		}
+	}
+	step = data;
+});
 
 var complete = function () {
 	if (map[stepKey[stepOrder[stepNum]]]) {
@@ -56,14 +61,14 @@ var moving_arrow = TweenLite.to(shuttle1, 1, {
 	onComplete: complete,
 });
 
-$(document).keydown(function(e) {
-    if (e.keyCode in map) {
-        map[e.keyCode] = true;
-				$('#' + stepReverseKey[e.keyCode]).css({"backgroundColor": "black"});
-    }
-}).keyup(function(e) {
-    if (e.keyCode in map) {
-        map[e.keyCode] = false;
-				$('#' + stepReverseKey[e.keyCode]).css({"backgroundColor": "#800080"});
-    }
-});
+// $(document).keydown(function(e) {
+//     if (e.keyCode in map) {
+//         map[e.keyCode] = true;
+// 				$('#' + stepReverseKey[e.keyCode]).css({"backgroundColor": "black"});
+//     }
+// }).keyup(function(e) {
+//     if (e.keyCode in map) {
+//         map[e.keyCode] = false;
+// 				$('#' + stepReverseKey[e.keyCode]).css({"backgroundColor": "#800080"});
+//     }
+// });

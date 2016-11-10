@@ -36,16 +36,16 @@
   background-repeat: no-repeat;
 }
 
-#up {
+#down {
   left: 32.5%;
-  background-image: url("../images/up.png");
+  background-image: url("../images/down.png");
   background-size: contain;
   background-repeat: no-repeat;
 }
 
-#down {
+#up {
   left: 52.5%;
-  background-image: url("../images/down.png");
+  background-image: url("../images/up.png");
   background-size: contain;
   background-repeat: no-repeat;
 }
@@ -78,5 +78,9 @@
 
 #score {
   color: black;
+  font-size: 48px;
+}
+
+#scoreChange {
   font-size: 48px;
 }
