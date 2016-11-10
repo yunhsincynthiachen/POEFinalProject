@@ -1,8 +1,8 @@
 var stepOrderSet= ["left", "down", "up", "right"];
-var map = {37: false, 38: false, 40: false, 39: false};
+var map = {1: false, 2: false, 3: false, 4: false};
 
-var stepKey = {"left":37, "up":38, "down":40, "right":39};
-var stepReverseKey = {37:"left", 38:"up", 40:"down", 39:"right"};
+var stepKey = {"left":1, "up":3, "down":2, "right":4};
+var stepReverseKey = {1:"left", 3:"up", 2:"down", 4:"right"};
 
 var stepOrder = ["left", "down", "down", "down", "left", "left"];
 var stepNum = 0;
@@ -16,11 +16,11 @@ socket.on('data', function (data) {
 	console.log(data);
 	for (var j = 1; j < data.toString().length; j++) {
 		if (data.toString().charAt(j) == 1) {
-			map[j+36] = true;
+			map[j] = true;
 			console.log(stepOrderSet[j-1]);
 			$('#' + stepOrderSet[j-1]).css({"backgroundColor": "black"});
 		} else {
-			map[j+36] = false;
+			map[j] = false;
 			$('#' + stepOrderSet[j-1]).css({"backgroundColor": "#800080"});
 		}
 	}
