@@ -1,73 +1,83 @@
-int buttonPin = 13; 
-int LEDout = A0; 
+const int THRESHOLD = 400;
+const int SENDINTERVAL = 5; 
 
-int prevState = HIGH; 
-int currentState; 
-unsigned long firstTime; 
+int LeftSensorPin = 0;
+float LeftPressure; 
+int LeftLED = 9; 
+int DownSensorPin = 1;
+float DownPressure; 
+int DownLED = 10; 
+
+int LEDPins[] = {LeftLED, DownLED};
+float brightness;
+//buttons Pressed should be LEFT, DOWN, UP, RIGHT
+int arrowsPressed[] = {0, 0, 0, 0};
+float previousTimeStamp = 0; 
+float currentTimeStamp; 
+String arrowsString; 
+
+int numericArrowString; 
 
 void setup(){ 
   Serial.begin(9600); 
-  pinMode(buttonPin, INPUT); 
-  pinMode(LEDout, OUTPUT); 
+  pinMode(LeftSensorPin, INPUT); 
+  pinMode(DownSensorPin, INPUT); 
+  pinMode(LeftLED, OUTPUT);
+  pinMode(DownLED, OUTPUT);  
 } 
 
 void loop(){
- //when button is pressed, it completes the circuit of and "pulls down" 
-  int buttonOpen = digitalRead(buttonPin); 
-  currentState = buttonOpen; 
-  
-//  if (!buttonOpen){ 
-//    Serial.write(10);
-//    digitalWrite(LEDout, HIGH);
-//    delay(400);
-//    digitalWrite(LEDout, LOW); 
-//    Serial.write(11);  
-//  }
-  
-  //if it is recently pressed, then set the time as the "first time" aka the zeroth millisecond 
-  //this will help compare how long button has been pressed
-  if ((currentState == LOW) && (prevState == HIGH)){
-//    Serial.println("PRESSED");
-    Serial.write(10);
-    firstTime = millis(); 
-    prevState = LOW;
-   
-    digitalWrite(LEDout, HIGH);
-    delay(200);
-    digitalWrite(LEDout, LOW);  
-    delay(200);
+  currentTimeStamp = millis(); 
+  if ((currentTimeStamp - previousTimeStamp) >= SENDINTERVAL){ 
+    arrowsString = convertArrayToString(arrowsPressed);
+//    numericArrowString = arrowsString.toInt();  
+//    Serial.println(isdigit(numericArrowString)); 
+    Serial.println(arrowsString);
+//    delay(200); 
     
+    //update previous
+    previousTimeStamp = currentTimeStamp; 
+    
+    //clear buttons pressed
+    resetArrowsPressed(); 
   }
   
-  //calculate how long the button has been held 
-  long timeHeld = millis() - firstTime; 
-//  Serial.println("first time pressed"); 
-//  Serial.println(firstTime); 
-//  Serial.println(timeHeld); 
-   
-  //if the button has been held longer than some time (for noise purposes), 
-  if((timeHeld > 20) && (firstTime !=0)){ 
-//    Serial.println("IN here"); 
-//    Serial.println("modulo");
-//    Serial.println(timeHeld%1000); 
-//    delay(100);
-    
-    if(currentState == LOW){ 
-      if ((timeHeld%1000 >=0) && (timeHeld%1000 <=50)){ 
-//        Serial.println("one second has passed");
-        digitalWrite(LEDout, HIGH);
-        delay(200);
-        digitalWrite(LEDout, LOW);
-        delay(200); 
-      }
-    }    
-    if((currentState == HIGH) && (prevState == LOW)){
-       digitalWrite(LEDout, LOW);  
-//       Serial.println("unpress"); 
-       Serial.write(11);  
-       prevState = currentState; 
-       firstTime = 0; 
-    }
-  }
-  
+  LeftPressure = analogRead(LeftSensorPin);  
+  DownPressure = analogRead(DownSensorPin);
+  recordPadPress(LeftPressure, 0);
+  recordPadPress(DownPressure, 1);  
 }
+
+ String convertArrayToString(int data[]){ 
+  String res = "1";
+  for (int i = 0; i < 4; i++){ 
+    if (i == 3){ 
+      res = res + String(data[i]); 
+    }
+    else{ 
+      res = res + String(data[i]); 
+    }
+  } 
+  return res; 
+}
+
+void resetArrowsPressed(){ 
+ for (int j = 0; j < 4; j++){ 
+  arrowsPressed[j] = 0; 
+ } 
+}
+ 
+ void recordPadPress(float pressure, int arrowNum){
+   if (pressure >= THRESHOLD){ 
+    //left button was pressed
+    arrowsPressed[arrowNum] = 1; 
+    brightness = map(pressure, 0, 1023, 0, 255);  
+    analogWrite(LEDPins[arrowNum], brightness); 
+    delay(100); 
+  } 
+  else{ 
+    analogWrite(LEDPins[arrowNum], LOW); 
+    delay(100); 
+  } 
+   
+ } 
