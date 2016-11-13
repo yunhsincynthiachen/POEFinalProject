@@ -4,7 +4,7 @@ var map = {1: false, 2: false, 3: false, 4: false};
 var stepKey = {"left":1, "up":3, "down":2, "right":4};
 var stepReverseKey = {1:"left", 3:"up", 2:"down", 4:"right"};
 
-var stepOrder = ["left", "down", "down", "down", "left", "left"];
+var stepOrder = ["left", "down", "right", "down", "left", "left"];
 var stepNum = 0;
 var myVar = '<div class="col-md-3 moving '+stepOrder[stepNum]+'" id="'+stepOrder[stepNum]+'"></div>';
 var rowDiv = $('#row-moving');

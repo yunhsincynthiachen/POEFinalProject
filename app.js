@@ -7,7 +7,6 @@ var io = require('socket.io').listen(server);
 
 app.use(express.static(__dirname + '/public'));
 
-//var serialport = new SerialPort("/dev/ttyACM0"); // replace this address with your port address
 
 var serialport = new serialPort("/dev/ttyACM0", {
     // baudRate: 9600,
