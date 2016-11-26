@@ -1,0 +1,210 @@
+#include <Adafruit_NeoPixel.h>
+
+//setting threshold 
+int THRESHOLD = 400;
+
+//set the interval of communication with website 
+int SENDINTERVAL = 5000;
+
+////communication time trackers interval 
+float previousTimeStamp = 0; 
+float currentTimeStamp; 
+
+//this is the Led Strip pin 
+int LEDStripPin = 6;
+
+int LeftSensorPin = 0;
+float LeftPressure; 
+
+int DownSensorPin = 1;
+float DownPressure; 
+
+float brightness;
+
+//buttons Pressed should be LEFT, DOWN, UP, RIGHT
+int arrowsPressed[] = {0, 0, 0, 0};
+String arrowsString; 
+
+int inputArrows[4]; 
+
+int numericArrowString; 
+
+//make LED strip object 
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(60, LEDStripPin);
+
+void setup(){ 
+  Serial.begin(9600); 
+  pinMode(LeftSensorPin, INPUT); 
+  pinMode(LEDStripPin, OUTPUT);
+  strip.begin();
+  strip.show(); // Initialize all pixels to 'off'
+} 
+
+void loop(){
+  currentTimeStamp = millis(); 
+  if ((currentTimeStamp - previousTimeStamp) >= SENDINTERVAL){ 
+    if (previousTimeStamp = 0){ 
+      readInfo(); 
+    }
+    sendInfo(inputArrows, arrowsPressed); 
+    readInfo(); 
+  }
+    
+  LeftPressure = analogRead(LeftSensorPin);  
+  Serial.print(LeftPressure); 
+  delay(200); 
+  DownPressure = analogRead(DownSensorPin);
+  Serial.print("DOWN"); 
+  Serial.println(DownPressure); 
+  delay(200);
+  determinePadPress(LeftPressure, 0);
+  determinePadPress(DownPressure, 1);  
+}
+
+void sendInfo(int* aInput, int* aPressed){ 
+  //check if the player hit the right arrow pads within the 5 minutes allocated 
+    Serial.println("are input and output the same?"); 
+    Serial.println(convertArrayToString(aInput)); 
+    Serial.println(convertArrayToString(aPressed)); 
+    Serial.println(compareInputToOutput(aInput, aPressed)); 
+    if (!compareInputToOutput(aInput, aPressed)){
+      Serial.println("did not press pad in time, so gonna turn lights red"); 
+      //make led strip red cause they didn't hit it
+      Serial.println("where to start when didn't hit?"); 
+      int start = mapArrowNumToLEDs(findHigh(inputArrows)); 
+      Serial.println(start); 
+      delay(500); 
+      turnLightsRed(start, start +10);    
+    } 
+    //now we will send  what the user did hit back to website 
+    arrowsString = convertArrayToString(aPressed);
+    Serial.println(arrowsString);
+    delay(200); 
+    
+    //update previous time it was in this sending loop
+    previousTimeStamp = currentTimeStamp; 
+    
+    //clear buttons pressed
+    resetArrowsPressed(); 
+//    int start = mapArrowNumToLEDs(findHigh(inputArrows)); 
+    turnLightsOff(0, 20);
+} 
+
+void readInfo(){ 
+  //figure out how to get information? 
+  int fakeInput[] = {0, 1, 0, 0}; 
+  memcpy(inputArrows, fakeInput, sizeof(fakeInput));
+  int start = mapArrowNumToLEDs(findHigh(inputArrows)); 
+  Serial.println("where to start?"); 
+  Serial.println(start); 
+  delay(500); 
+  turnLightsBlue(start, start + 10);  
+} 
+
+void determinePadPress(float pressure, int arrowNum){
+  Serial.println("IN determine pad pressssss"); 
+  Serial.println(pressure); 
+  Serial.println(THRESHOLD); 
+  delay(700); 
+  if (pressure >= THRESHOLD){ 
+    Serial.println("PAD WAS PRESSED");
+   //arrow was pressed
+   arrowsPressed[arrowNum] = 1; 
+   int start = mapArrowNumToLEDs(arrowNum); 
+   if (findHigh(inputArrows) == arrowNum){
+        //turn led strip on 
+     turnLightsGreen(start, start + 10); 
+   }
+   else{ 
+     //what happens if you hit the wrong pad?
+     turnLightsRed(start, start + 10); 
+   }
+  } 
+  else{ 
+    Serial.println('not greater than the threshold');
+  } 
+}
+ 
+int compareInputToOutput(int *inputs, int *pressed){
+  Serial.println(inputs == pressed); 
+  delay(500); 
+  for (int i = 0; i <4; i++){ 
+    if (inputs[i] != pressed[i]){ 
+      return false; 
+    }  
+  } 
+  return true; 
+}
+
+
+int findHigh(int* data){ 
+  //this assumes only one will be high 
+  for (int i = 0; i < sizeof(data); i ++){ 
+   if(data[i] == 1){ 
+      return i; 
+   } 
+  }
+  return 5; 
+}
+
+int mapArrowNumToLEDs(int arrowNum){
+   switch(arrowNum){ 
+    case 0: 
+      return 0; 
+      break; 
+    case 1: 
+      return 10;
+      break; 
+   } 
+}
+
+String convertArrayToString(int data[]){ 
+  String res = "";
+  for (int i = 0; i < 4; i++){ 
+    if (i == 3){ 
+      res = res + String(data[i]); 
+    }
+    else{ 
+      res = res + String(data[i]); 
+    }
+  } 
+  return res; 
+}
+
+void resetArrowsPressed(){ 
+ for (int j = 0; j < 4; j++){ 
+  arrowsPressed[j] = 0; 
+ } 
+}
+
+
+//LIGHT FUNCTIONS 
+void turnLightsOff(int startLEDs, int endLEDs){ 
+   for (int i = startLEDs; i < endLEDs; i++){ 
+    strip.setPixelColor(i, 0, 0, 0);
+   }
+   strip.show(); 
+}
+
+void turnLightsGreen(int startLEDs, int endLEDs){ 
+   for (int i = startLEDs; i < endLEDs; i++){ 
+    strip.setPixelColor(i, 10, 255, 5);
+   }  
+   strip.show(); 
+}
+
+void turnLightsRed(int startLEDs, int endLEDs){ 
+   for (int i = startLEDs; i < endLEDs; i++){ 
+    strip.setPixelColor(i, 255, 10, 10);
+   } 
+  strip.show();  
+} 
+
+void turnLightsBlue(int startLEDs, int endLEDs){ 
+   for (int i = startLEDs; i < endLEDs; i++){ 
+    strip.setPixelColor(i, 10, 10, 255);
+   } 
+  strip.show();   
+  
+}
+
