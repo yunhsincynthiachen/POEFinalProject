@@ -16,7 +16,8 @@
 	<script src="/bower_components/socket.io-client/dist/socket.io.min.js"></script>
 	<script src="/bower_components/Processing.js/processing.min.js"></script>
   <script src="/bower_components/gsap/src/uncompressed/TweenLite.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.19.0/TweenMax.min.js"></script>
+  <script src="/bower_components/gsap/src/uncompressed/TweenMax.js"></script>
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.19.0/TweenMax.min.js"></script> -->
 	<script>
 		var socket = io.connect('http://localhost');
 		var step = 0;
@@ -24,7 +25,7 @@
 </head>
 <body>
 	<div class="container background">
-		<h1 class="game-header">POE DDR Score: <span id="score">0</span> <span id="scoreChange"></span></h1>
+    <h1 class="game-header">POE DDR Score: <span id="score">0</span> <span id="scoreChange"></span></h1>
 		<div class="row">
 			<div class="col-md-3" id="left">
 				<!-- <p class="step-tag">Left Step #: <span id="step 1"></span></p> -->
@@ -41,7 +42,12 @@
 		</div>
     <div class="row" id="row-moving">
     </div>
+    <div class="playpause"></div>
 	</div>
+  <audio class="player-audio">
+    <source src="cantbetamed.mp3" type="audio/mpeg">
+  Your browser does not support the audio element.
+  </audio>
 	<script type="text/javascript" src="script.js"></script>
 </body>
 </html>
