@@ -6,28 +6,27 @@ int THRESHOLD = 400;
 //set the interval of communication with website 
 int SENDINTERVAL = 5000;
 
-////communication time trackers interval 
+//communication time trackers interval 
 float previousTimeStamp = 0; 
 float currentTimeStamp; 
 
-//this is the Led Strip pin 
-int LEDStripPin = 6;
-
+//INPUTS
+//hold left sensor pin and pressure 
 int LeftSensorPin = 0;
 float LeftPressure; 
 
 int DownSensorPin = 1;
 float DownPressure; 
 
-float brightness;
+//structure to store what comes from web app
+int inputArrows[4]; 
+
+//OUTPUT
+//this is the Led Strip pin 
+int LEDStripPin = 6;
 
 //buttons Pressed should be LEFT, DOWN, UP, RIGHT
 int arrowsPressed[] = {0, 0, 0, 0};
-String arrowsString; 
-
-int inputArrows[4]; 
-
-int numericArrowString; 
 
 //make LED strip object 
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(60, LEDStripPin);
@@ -36,98 +35,92 @@ void setup(){
   Serial.begin(9600); 
   pinMode(LeftSensorPin, INPUT); 
   pinMode(LEDStripPin, OUTPUT);
+  
+  //necessary to initialize LED strip 
   strip.begin();
   strip.show(); // Initialize all pixels to 'off'
 } 
 
 void loop(){
+  //record the current time stamp 
   currentTimeStamp = millis(); 
+  //if more than 5000 miliseconds has passed, then send and read info 
   if ((currentTimeStamp - previousTimeStamp) >= SENDINTERVAL){ 
+    //need to read info for the very first time 
     if (previousTimeStamp = 0){ 
       readInfo(); 
     }
+    //then always send and then read 
     sendInfo(inputArrows, arrowsPressed); 
     readInfo(); 
   }
-    
-  LeftPressure = analogRead(LeftSensorPin);  
-  Serial.print(LeftPressure); 
-  delay(200); 
+   
+  //read left pressure and then record if it was pressed 
+  LeftPressure = analogRead(LeftSensorPin); 
+  determinePadPress(LeftPressure, 0); 
+  
+  //read right pressure and then record if it was pressed 
   DownPressure = analogRead(DownSensorPin);
-  Serial.print("DOWN"); 
-  Serial.println(DownPressure); 
-  delay(200);
-  determinePadPress(LeftPressure, 0);
   determinePadPress(DownPressure, 1);  
 }
 
 void sendInfo(int* aInput, int* aPressed){ 
-  //check if the player hit the right arrow pads within the 5 minutes allocated 
-    Serial.println("are input and output the same?"); 
-    Serial.println(convertArrayToString(aInput)); 
-    Serial.println(convertArrayToString(aPressed)); 
-    Serial.println(compareInputToOutput(aInput, aPressed)); 
+    //if the time frame is over and they did not press the arrow they were supposed to, then make arrow red  
     if (!compareInputToOutput(aInput, aPressed)){
       Serial.println("did not press pad in time, so gonna turn lights red"); 
       //make led strip red cause they didn't hit it
-      Serial.println("where to start when didn't hit?"); 
       int start = mapArrowNumToLEDs(findHigh(inputArrows)); 
-      Serial.println(start); 
-      delay(500); 
-      turnLightsRed(start, start +10);    
+      turnLightsRed(start, start +10);  
+      delay(300);   
     } 
-    //now we will send  what the user did hit back to website 
-    arrowsString = convertArrayToString(aPressed);
-    Serial.println(arrowsString);
-    delay(200); 
     
     //update previous time it was in this sending loop
     previousTimeStamp = currentTimeStamp; 
     
-    //clear buttons pressed
+    //clear arrows pressed
     resetArrowsPressed(); 
 //    int start = mapArrowNumToLEDs(findHigh(inputArrows)); 
+    //turn all the lights off 
     turnLightsOff(0, 20);
 } 
 
 void readInfo(){ 
-  //figure out how to get information? 
+  //TO DO: figure out how to get information? 
+  //fake input is placeholder for getting information later 
   int fakeInput[] = {0, 1, 0, 0}; 
+  
+  //copy the fake input into inputArrows 
   memcpy(inputArrows, fakeInput, sizeof(fakeInput));
+  
+  //make arrows blue if they need to be pressed 
   int start = mapArrowNumToLEDs(findHigh(inputArrows)); 
-  Serial.println("where to start?"); 
-  Serial.println(start); 
-  delay(500); 
   turnLightsBlue(start, start + 10);  
 } 
 
 void determinePadPress(float pressure, int arrowNum){
-  Serial.println("IN determine pad pressssss"); 
-  Serial.println(pressure); 
-  Serial.println(THRESHOLD); 
-  delay(700); 
+  Serial.println("IN determine pad pressssss");
+  //if the pressure is greater than the threshold, then the arrow was pressed 
   if (pressure >= THRESHOLD){ 
-    Serial.println("PAD WAS PRESSED");
-   //arrow was pressed
+   Serial.println("PAD WAS PRESSED");
+   //record the press in the arrows pressed array 
    arrowsPressed[arrowNum] = 1; 
+   //if the arrow was meant to be pressed, make it green
+   //otherwise, if the arrow was not meant to be pressed, make it red? 
    int start = mapArrowNumToLEDs(arrowNum); 
    if (findHigh(inputArrows) == arrowNum){
         //turn led strip on 
      turnLightsGreen(start, start + 10); 
    }
    else{ 
-     //what happens if you hit the wrong pad?
+     //Q: what happens if you hit the wrong pad?
      turnLightsRed(start, start + 10); 
    }
-  } 
-  else{ 
-    Serial.println('not greater than the threshold');
   } 
 }
  
 int compareInputToOutput(int *inputs, int *pressed){
-  Serial.println(inputs == pressed); 
-  delay(500); 
+  //check if the input array matches what I pressed 
+  //return true if the inputs equal the pressed, otherwise return false 
   for (int i = 0; i <4; i++){ 
     if (inputs[i] != pressed[i]){ 
       return false; 
@@ -137,7 +130,8 @@ int compareInputToOutput(int *inputs, int *pressed){
 }
 
 
-int findHigh(int* data){ 
+int findHigh(int* data){
+  //find the only number in the array that is supposed to be pressed or is high  
   //this assumes only one will be high 
   for (int i = 0; i < sizeof(data); i ++){ 
    if(data[i] == 1){ 
@@ -148,6 +142,9 @@ int findHigh(int* data){
 }
 
 int mapArrowNumToLEDs(int arrowNum){
+  //map the arrow number to where the LED strip should start to turn on 
+  //if left pad press turn on LEDs 0 -10 
+  //if down pad press, turn on LEDs 10 - 20 
    switch(arrowNum){ 
     case 0: 
       return 0; 
@@ -159,6 +156,7 @@ int mapArrowNumToLEDs(int arrowNum){
 }
 
 String convertArrayToString(int data[]){ 
+  //cannot print array apparently, just making integer array into string to print 
   String res = "";
   for (int i = 0; i < 4; i++){ 
     if (i == 3){ 
@@ -172,11 +170,11 @@ String convertArrayToString(int data[]){
 }
 
 void resetArrowsPressed(){ 
+ //clear the arrows pressed integer array 
  for (int j = 0; j < 4; j++){ 
   arrowsPressed[j] = 0; 
  } 
 }
-
 
 //LIGHT FUNCTIONS 
 void turnLightsOff(int startLEDs, int endLEDs){ 
@@ -207,4 +205,3 @@ void turnLightsBlue(int startLEDs, int endLEDs){
   strip.show();   
   
 }
-
