@@ -54,12 +54,14 @@ function createGame (stepOrder) {
 				y: "-425px",
 				ease: Linear.easeNone,
 			});
+			socket.emit('message', stepOrder[stepNum]);
 		} else {
 			var moving_arrow = TweenMax.to(shuttle1, 0.75, {
 				y: "-425px",
 				ease: Linear.easeNone,
 				onComplete: complete,
 			});
+			socket.emit('message', stepOrder[stepNum]);
 		}
 	};
 
