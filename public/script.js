@@ -6,7 +6,7 @@ var stepReverseKey = {1:"left", 3:"up", 2:"down", 4:"right"};
 
 var cantBeTamed = ["none", "none","right", "none", "right", "up", "none", "up", "none", "left", "none", "left", "none",
 										"right", "none", "right"];
-
+var start = true;
 var playing = false;
 
 function createGame (stepOrder) {
@@ -71,21 +71,28 @@ function createGame (stepOrder) {
 		onComplete: complete,
 	});
 }
-
-$('.playpause').click(function () {
-	$(".player-audio").trigger("play");
-  $(".playpause").fadeOut();
-	createGame(cantBeTamed);
-});
+//
+// $('.playpause').click(function () {
+// 	$(".player-audio").trigger("play");
+//   $(".playpause").fadeOut();
+// 	createGame(cantBeTamed);
+// });
 
 $(document).keydown(function(e) {
     if (e.keyCode == 32) {
-			if (playing) {
-				TweenMax.pauseAll(true, true);
-				$(".player-audio").trigger("pause");
-			} else {
+			if (playing && start) {
+				$(".playpause").fadeOut();
+				$(".player-audio").trigger("play");
+				createGame(cantBeTamed);
+				start = false;
+			} else if (playing && !start){
+				$(".playpause").fadeOut();
 				TweenMax.resumeAll(true, true);
 				$(".player-audio").trigger("play");
+			} else {
+				$(".playpause").fadeIn();
+				TweenMax.pauseAll(true, true);
+				$(".player-audio").trigger("pause");
 			}
     }
 		playing = !playing;
