@@ -2,7 +2,7 @@ var http = require('http');
 var express = require('express');
 var app = express();
 var serialPort = require("serialport");
-var server = http.createServer(app).listen(3000);
+var server = http.createServer(app).listen(process.env.PORT || 3000);
 var io = require('socket.io').listen(server);
 
 app.use(express.static(__dirname + '/public'));
