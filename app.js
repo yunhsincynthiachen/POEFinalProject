@@ -8,12 +8,12 @@ var io = require('socket.io').listen(server);
 app.use(express.static(__dirname + '/public'));
 
 var keyDict = {
-  "left" : 11000,
-  "down" : 10100,
-  "up" : 10010,
-  "right" : 10001,
-  "none" : 10000,
-  "null" : 10000
+  "left" : "11000\n",
+  "down" : "10100\n",
+  "up" : "10010\n",
+  "right" : "10001\n",
+  "none" : "10000\n",
+  "null" : "10000\n"
 }
 
 // io.configure(function () {
@@ -21,7 +21,7 @@ var keyDict = {
 //   io.set("polling duration", 10);
 // });
 
-var serialport = new serialPort("/dev/ttyACM0", {
+var serialport = new serialPort("/dev/ttyACM2", {
     // baudRate: 9600,
     // dataBits: 8,
     // parity: 'none',
@@ -52,7 +52,7 @@ serialport.on('open', function(){
     socket.on('message', function (recievedData) {
       if (recievedData !== "null") {
         serialport.write(keyDict[recievedData]);
-        console.log(keyDict[recievedData]);
+        // console.log(keyDict[recievedData]);
       }
     });
 

@@ -1,10 +1,10 @@
 #include <Adafruit_NeoPixel.h>
 
 //setting threshold 
-int THRESHOLD = 400;
+int THRESHOLD = 950;
 
 //set the interval of communication with website 
-int SENDINTERVAL = 5000;
+int SENDINTERVAL = 3000;
 
 //communication time trackers interval 
 float previousTimeStamp = 0; 
@@ -19,7 +19,7 @@ float LeftPressure;
 //float DownPressure; 
 
 //structure to store what comes from web app
-int inputArrows[4] = {1,0,0,0}; 
+int inputArrows[4]; 
 
 //OUTPUT
 //this is the Led Strip pin 
@@ -30,6 +30,9 @@ int arrowsPressed[] = {0, 0, 0, 0};
 
 //make LED strip object 
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(60, LEDStripPin);
+
+//boolean to keep state while reading 
+bool inProgress = false;  
 
 void setup(){ 
   Serial.begin(9600); 
@@ -42,70 +45,75 @@ void setup(){
 } 
 
 void loop(){
-  //record the current time stamp 
-  currentTimeStamp = millis(); 
-  //if more than 5000 miliseconds has passed, then send and read info 
-  if ((currentTimeStamp - previousTimeStamp) >= SENDINTERVAL){ 
-    //need to read info for the very first time 
-    if (previousTimeStamp = 0){ 
-      readInfo(); 
+   currentTimeStamp = millis(); 
+   if (inProgress){ 
+    //code to happen in progress, when the blue light is on or the arrow is moving 
+    //record the current time stamp 
+    //if more than 5000 miliseconds has passed, then send and read info 
+    if ((currentTimeStamp - previousTimeStamp) >= SENDINTERVAL){
+      inProgress = false;  
+//      //then always send and then read 
+      sendInfo(inputArrows, arrowsPressed); 
+//      readInfo(); 
     }
-    //then always send and then read 
-    sendInfo(inputArrows, arrowsPressed); 
-    readInfo(); 
-  }
-  
-  //read left pressure and then record if it was pressed 
-  LeftPressure = analogRead(LeftSensorPin); 
-  if (inputArrows[0] == 1){ 
-    determinePadPress(LeftPressure, 0);
-  } 
-
+    //read left pressure and then record if it was pressed 
+    LeftPressure = analogRead(LeftSensorPin); 
+    if (inputArrows[0] == 1){ 
+      determinePadPress(LeftPressure, 0);
+    } 
   //read right pressure and then record if it was pressed 
-//  DownPressure = analogRead(DownSensorPin);
-//  determinePadPress(DownPressure, 1);  
+  //  DownPressure = analogRead(DownSensorPin);
+  //  determinePadPress(DownPressure, 1);  
+  }
+ 
+  if (!inProgress){ 
+    //then always send and then read 
+//    sendInfo(inputArrows, arrowsPressed); 
+    readInfo();
+  }  
 }
 void sendInfo(int* aInput, int* aPressed){ 
     String aPressedString = convertArrayToString(aPressed); 
-    Serial.println(aPressedString); 
+    Serial.println(aPressedString);
+    delay(300);  
     //if the time frame is over and they did not press the arrow they were supposed to, then make arrow red  
     if (!compareInputToOutput(aInput, aPressed)){
       //make led strip red cause they didn't hit it
       int start = mapArrowNumToLEDs(findHigh(inputArrows)); 
       turnLightsRed(start, start + 10);  
-      delay(300);  
+      delay(200);  
     } 
-    
-    //update previous time it was in this sending loop
-    previousTimeStamp = currentTimeStamp; 
     
     //clear arrows pressed
     resetArrowsPressed(); 
-//    int start = mapArrowNumToLEDs(findHigh(inputArrows)); 
+    //    int start = mapArrowNumToLEDs(findHigh(inputArrows)); 
     //turn all the lights off 
     turnLightsOff(0, 20);
 } 
 
 void readInfo(){ 
-  //TO DO: figure out how to get information? 
-  //fake input is placeholder for getting information later 
   String contentString; 
   int content; 
-//   if (Serial.available()>0) {
+   if (Serial.available()>0) {
 //     content = Serial.parseInt(); 
-//     contentString = String(content); 
-//     inputArrows[0] = contentString.charAt(0); 
-//     inputArrows[1] = contentString.charAt(1);
-//     inputArrows[2] = contentString.charAt(2);
-//     inputArrows[3] = contentString.charAt(3);
-//   }
-//   
-//  Serial.println(content);  
+     contentString = Serial.readString(); 
+     inputArrows[0] = (int)(contentString.charAt(1)) - 48; 
+     inputArrows[1] = (int)(contentString.charAt(2)) - 48;
+     inputArrows[2] = (int)(contentString.charAt(3)) - 48;
+     inputArrows[3] = (int)(contentString.charAt(4)) - 48;
+     
+//     Serial.println(convertArrayToString(inputArrows));
+      int start = mapArrowNumToLEDs(findHigh(inputArrows)); 
+      if (inputArrows[0] ==1) { 
+          turnLightsBlue(start, start + 10);  
+      }
+      inProgress = true; 
+      //update previous time it was in this sending loop
+      previousTimeStamp = currentTimeStamp; 
+   }
+   
+//  Serial.println(convertArrayToString(inputArrows));  
   //make arrows blue if they need to be pressed 
-  int start = mapArrowNumToLEDs(findHigh(inputArrows)); 
-  if (inputArrows[0] ==1) { 
-      turnLightsBlue(start, start + 10);  
-  }
 } 
 
 void determinePadPress(float pressure, int arrowNum){
