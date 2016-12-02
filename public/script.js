@@ -4,8 +4,10 @@ var map = {1: false, 2: false, 3: false, 4: false};
 var stepKey = {"left":1, "up":3, "down":2, "right":4};
 var stepReverseKey = {1:"left", 3:"up", 2:"down", 4:"right"};
 
-var cantBeTamed = ["none", "none","right", "none", "right", "up", "none", "up", "none", "left", "none", "left", "none",
-										"right", "none", "right"];
+// var cantBeTamed = ["none", "none","right", "none", "right", "up", "none", "up", "none", "left", "none", "left", "none",
+// 										"right", "none", "right"];
+
+var cantBeTamed = ["left", "left", "left", "left", "left", "left", "left", "left", "left", "left", "left", "left", "left"];
 var start = true;
 var playing = false;
 
@@ -18,18 +20,19 @@ function createGame (stepOrder) {
 
 	var shuttle1 = $('.'+stepOrder[stepNum]);
 
-	// socket.on('data', function (data) {
-	// 	for (var j = 1; j < data.toString().length; j++) {
-	// 		if (data.toString().charAt(j) == 1) {
-	// 			map[j] = true;
-	// 			$('#' + stepOrderSet[j-1]).css({"backgroundColor": "black"});
-	// 		} else {
-	// 			map[j] = false;
-	// 			$('#' + stepOrderSet[j-1]).css({"backgroundColor": "#800080"});
-	// 		}
-	// 	}
-	// 	step = data;
-	// });
+	socket.on('data', function (data) {
+		console.log(data);
+		for (var j = 0; j < data.toString().length; j++) {
+			if (data.toString().charAt(j) == 1) {
+				map[j+1] = true;
+				$('#' + stepOrderSet[j]).css({"backgroundColor": "black"});
+			} else {
+				map[j+1] = false;
+				$('#' + stepOrderSet[j]).css({"backgroundColor": "#800080"});
+			}
+		}
+		step = data;
+	});
 
 	var complete = function () {
 		var step = stepOrder[stepNum];
@@ -71,12 +74,6 @@ function createGame (stepOrder) {
 		onComplete: complete,
 	});
 }
-//
-// $('.playpause').click(function () {
-// 	$(".player-audio").trigger("play");
-//   $(".playpause").fadeOut();
-// 	createGame(cantBeTamed);
-// });
 
 $(document).keydown(function(e) {
     if (e.keyCode == 32) {
