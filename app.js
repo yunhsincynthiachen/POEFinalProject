@@ -16,6 +16,11 @@ var keyDict = {
   "null" : [0, 0, 0, 0]
 }
 
+io.configure(function () {
+  io.set("transports", ["xhr-polling"]);
+  io.set("polling duration", 10);
+});
+
 // var serialport = new serialPort("/dev/ttyACM0", {
 //     baudRate: 9600,
 //     dataBits: 8,
