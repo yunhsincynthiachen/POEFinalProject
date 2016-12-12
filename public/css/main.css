@@ -1,3 +1,63 @@
+html {
+	height: 102%;
+}
+
+body {
+	font-family: 'Source Sans Pro', sans-serif;
+	color: #fff;
+	background-color: #110011;
+	font-size: 18px;
+	margin: 0px;
+	word-wrap: break-word;
+}
+
+.animate-text {
+	background: -webkit-linear-gradient(144deg, #e017ff, #ff6e48);
+	background-size: 400% 400%;
+  	-webkit-text-fill-color: transparent;
+  	background-clip: text;
+  	-moz-background-clip: text;
+  	-webkit-background-clip: text;
+	-webkit-animation: gradient 4s ease infinite;
+	-moz-animation: gradient 4s ease infinite;
+	-o-animation: gradient 4s ease infinite;
+	animation: gradient 4s ease infinite;
+}
+
+@-webkit-keyframes gradient {
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+}
+@-moz-keyframes gradient {
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+}
+@-o-keyframes gradient {
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+}
+@keyframes gradient {
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+}
+
+@font-face {
+    font-family: 'alba';
+    src: url('../fonts/alba_reg.TTF');
+}
+
+span#title {
+	font-family: 'alba';
+	font-weight: normal;
+	font-size: 50px;
+	line-height: 1.5em;
+	margin: 0px;
+	/*margin-bottom: 10px;*/
+}
 
 .button {
   background-color: Transparent;
@@ -11,8 +71,13 @@
 }
 
 .game-header {
-  padding: 50px;
+  margin-top: 0;
+  padding-bottom: 20px;
   color: white;
+}
+
+.playpause-instructions {
+  font-size: 18px;
 }
 
 #dialogue {
@@ -109,4 +174,19 @@
   position: absolute;
   bottom: 0;
   text-align: center;
+}
+
+.buttondiv {
+  width: 100%;
+  padding-left: 40%
+}
+
+.playButton {
+  width: 300px;
+  height: 140px;
+}
+
+.details {
+  width: 300px;
+  height: 120px;
 }

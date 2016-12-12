@@ -11,6 +11,7 @@
 	<link href="css/bootstrap.min.css" rel="stylesheet">
 	<link href="css/main.css" rel="stylesheet">
 	<link rel="shortcut icon" href="images/ddricon.png">
+  <link href="https://fonts.googleapis.com/css?family=Audiowide|Source+Sans+Pro|VT323" rel="stylesheet">
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 	<script src="/bower_components/socket.io-client/dist/socket.io.min.js"></script>
@@ -25,7 +26,12 @@
 </head>
 <body>
 	<div class="container background">
-    <h1 class="game-header">POE DDR Score: <span id="score">0</span> <span id="scoreChange"></span></h1>
+    <center><span id="title" class="animate-text">groovn' n' movin'</span></center>
+    <h1 class="game-header">POE DDR Score:
+      <span id="score">0</span> <span id="scoreChange"></span>
+      <br>
+      <p class="playpause-instructions">Hit Space Bar to Play/Pause</p>
+    </h1>
 		<div class="row">
 			<div class="col-md-3" id="left">
 				<!-- <p class="step-tag">Left Step #: <span id="step 1"></span></p> -->

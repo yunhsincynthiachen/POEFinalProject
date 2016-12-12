@@ -4,14 +4,19 @@ var map = {1: false, 2: false, 3: false, 4: false};
 var stepKey = {"left":1, "up":3, "down":2, "right":4};
 var stepReverseKey = {1:"left", 3:"up", 2:"down", 4:"right"};
 
-var cantBeTamed = ["none", "none","right", "none", "right", "up", "none", "up", "none", "left", "none", "left", "none",
-										"right", "none", "right"];
+var cantBeTamed = ["right", "right", "up", "up", "left", "left", "right", "right","left","up"];
 
-var cantBeTamed = ["left", "left", "left", "left", "left", "left", "left", "left", "left", "left", "left", "left", "left"];
+// var cantBeTamed = ["left", "left", "left", "left", "left", "left", "left", "left", "left", "left", "left", "left", "left"];
 var start = true;
 var playing = false;
+var keyboardGame;
 
-function createGame (stepOrder) {
+socket.on('keyboardGame', function (data) {
+	keyboardGame = data;
+	console.log(keyboardGame);
+});
+
+function createGame (stepOrder, isKeyboardGame) {
 
 	var stepNum = 0;
 	var myVar = '<div class="col-md-3 moving '+stepOrder[stepNum]+'" id="'+stepOrder[stepNum]+'"></div>';
@@ -20,19 +25,30 @@ function createGame (stepOrder) {
 
 	var shuttle1 = $('.'+stepOrder[stepNum]);
 
-	socket.on('data', function (data) {
-		console.log(data);
-		for (var j = 0; j < data.toString().length; j++) {
-			if (data.toString().charAt(j) == 1) {
-				map[j+1] = true;
-				$('#' + stepOrderSet[j]).css({"backgroundColor": "black"});
-			} else {
-				map[j+1] = false;
-				$('#' + stepOrderSet[j]).css({"backgroundColor": "#800080"});
+	console.log(keyboardGame);
+	if (isKeyboardGame) {
+		console.log("KEYBOARDGAME");
+		// .keyup(function(e) {
+		//     if (e.keyCode in map) {
+		//         map[e.keyCode] = false;
+		// 				$('#' + stepReverseKey[e.keyCode]).css({"backgroundColor": "#800080"});
+		//     }
+		// });
+	} else {
+		socket.on('data', function (data) {
+			console.log(data);
+			for (var j = 0; j < data.toString().length; j++) {
+				if (data.toString().charAt(j) == 1) {
+					map[j+1] = true;
+					$('#' + stepOrderSet[j]).css({"backgroundColor": "black"});
+				} else {
+					map[j+1] = false;
+					$('#' + stepOrderSet[j]).css({"backgroundColor": "#800080"});
+				}
 			}
-		}
-		step = data;
-	});
+			step = data;
+		});
+	}
 
 	var complete = function () {
 		rowDiv.empty();
@@ -41,10 +57,10 @@ function createGame (stepOrder) {
 		if (step != "none") {
 			if (map[stepKey[step]]) {
 				$("#score").text(parseInt($("#score").text()) + 100);
-				$('#scoreChange').text('+100').css({'color':'green'});
+				$('#scoreChange').text('+100').css({'color':'#33FF33'});
 			} else {
 				$("#score").text(parseInt($("#score").text()) - 100);
-				$('#scoreChange').text('-100').css({'color':'red'});
+				$('#scoreChange').text('-100').css({'color':'#FF0000'});
 			}
 		}
 
@@ -54,13 +70,13 @@ function createGame (stepOrder) {
 		var shuttle1 = $('.'+stepOrder[stepNum]);
 
 		if (stepNum == stepOrder.length) {
-			var moving_arrow = TweenMax.to(shuttle1, 3.5, {
+			var moving_arrow = TweenMax.to(shuttle1, 4, {
 				y: "-425px",
 				ease: Linear.easeNone,
 			});
 			socket.emit('message', stepOrder[stepNum]);
 		} else {
-			var moving_arrow = TweenMax.to(shuttle1, 3.5, {
+			var moving_arrow = TweenMax.to(shuttle1, 4, {
 				y: "-425px",
 				ease: Linear.easeNone,
 				onComplete: complete,
@@ -69,7 +85,7 @@ function createGame (stepOrder) {
 		}
 	};
 
-	var moving_arrow = TweenMax.to(shuttle1, 3.5, {
+	var moving_arrow = TweenMax.to(shuttle1, 4, {
 	  y: "-425px",
 	  ease: Linear.easeNone,
 		onComplete: complete,
@@ -82,7 +98,7 @@ $(document).keydown(function(e) {
 			if (playing && start) {
 				$(".playpause").fadeOut();
 				$(".player-audio").trigger("play");
-				createGame(cantBeTamed);
+				createGame(cantBeTamed, keyboardGame);
 				start = false;
 			} else if (playing && !start){
 				$(".playpause").fadeOut();
@@ -96,10 +112,3 @@ $(document).keydown(function(e) {
     }
 		playing = !playing;
 })
-
-// .keyup(function(e) {
-//     if (e.keyCode in map) {
-//         map[e.keyCode] = false;
-// 				$('#' + stepReverseKey[e.keyCode]).css({"backgroundColor": "#800080"});
-//     }
-// });

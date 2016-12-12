@@ -11,6 +11,7 @@
 	<link href="css/bootstrap.min.css" rel="stylesheet">
 	<link href="css/main.css" rel="stylesheet">
 	<link rel="shortcut icon" href="images/ddricon.png">
+  <link href="https://fonts.googleapis.com/css?family=Audiowide|Source+Sans+Pro|VT323" rel="stylesheet">
 
 	<script src="/bower_components/socket.io-client/dist/socket.io.min.js"></script>
 	<script src="/bower_components/Processing.js/processing.min.js"></script>
@@ -21,12 +22,29 @@
 </head>
 <body>
 	<div class="container background">
-		<h1 class="game-header"> POE DDR Game </h1>
-		<p class="description"> Description of the project goes here. It’s pretty long. Here is some more text. It’s not actually that long. Shouldn’t go past the end of this paragraph. DDR is so fun! Arrows and colors and seizures. More text and some more text and even more text here. Woohoo!! Let’s Dance!</p>
-		<form action="game.html">
-		    <input class="button" type="submit" value="> PLAY" />
+    <center><span id="title" class="animate-text">groovn' n' movin'</span></center>
+		<p class="description">Keep the rythm and dance movement going, 'cause we're gonna be <b class="animate-text">GROOVN'</b> <b class="animate-text">N'</b> <b class="animate-text">MOVIN'</b>! We've brought back everyone's facorite arcade game, now accessible in a polished and easy to play mode. Play our web game with either our homebrew pad or your own handy-dandy keyboard.
+
+      <br>
+      <br>
+      Just STEP on four arrowed pads on the board to match the arrows that scroll up the screen in time with a chosen song
+    </p>
+    <div class="buttondiv">
+      <a href="game.html">
+        <img class="playButton" src="images/playbutton.png" />
+      </a>
+    </div>
+    <div class="buttondiv">
+      <a href="game.html">
+        <img class="details" src="images/questionMark.png" />
+      </a>
+    </div>
+		<!-- <form class="play-form" action="game.html">
+      <input class="playButton" type="image" src="images/playbutton.png" alt="Submit">
 		</form>
-		<button class="button"> ABOUT</button>
+    <form class="play-form" action="game.html">
+      <input class="details" type="image" src="images/questionMark.png" alt="Submit">
+    </form> -->
 	</div>
 </body>
 </html>

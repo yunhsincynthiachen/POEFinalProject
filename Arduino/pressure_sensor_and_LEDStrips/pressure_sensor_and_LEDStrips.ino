@@ -13,10 +13,11 @@ float currentTimeStamp;
 //INPUTS
 //hold left sensor pin and pressure 
 int LeftSensorPin = 0;
-float LeftPressure; 
+int UpSensorPin = 1;
+int DownSensorPin = 2;
+int RightSensorPin = 3;
 
-//int DownSensorPin = 1;
-//float DownPressure; 
+float LeftPressure, DownPressure, UpPressure, RightPressure; 
 
 //structure to store what comes from web app
 int inputArrows[4]; 
@@ -37,6 +38,10 @@ bool inProgress = false;
 void setup(){ 
   Serial.begin(9600); 
   pinMode(LeftSensorPin, INPUT); 
+  pinMode(RightSensorPin, INPUT);
+  pinMode(UpSensorPin, INPUT);
+  pinMode(DownSensorPin, INPUT);
+
   pinMode(LEDStripPin, OUTPUT);
   
   //necessary to initialize LED strip 
@@ -57,10 +62,23 @@ void loop(){
 //      readInfo(); 
     }
     //read left pressure and then record if it was pressed 
+    delay(200);
     LeftPressure = analogRead(LeftSensorPin); 
+    delay(200);
+    RightPressure = analogRead(RightSensorPin);
+    delay(200);
+    UpPressure = analogRead(UpSensorPin);
+    delay(200);
+    DownPressure = analogRead(DownSensorPin);
     if (inputArrows[0] == 1){ 
       determinePadPress(LeftPressure, 0);
-    } 
+    } else if (inputArrows[1] == 1) {
+      determinePadPress(DownPressure, 1);
+    } else if (inputArrows[2] == 1) {
+      determinePadPress(UpPressure, 2);
+    } else if (inputArrows[3] == 1) {
+      determinePadPress(RightPressure, 3);
+    }
   //read right pressure and then record if it was pressed 
   //  DownPressure = analogRead(DownSensorPin);
   //  determinePadPress(DownPressure, 1);  
@@ -79,8 +97,10 @@ void sendInfo(int* aInput, int* aPressed){
     //if the time frame is over and they did not press the arrow they were supposed to, then make arrow red  
     if (!compareInputToOutput(aInput, aPressed)){
       //make led strip red cause they didn't hit it
-      int start = mapArrowNumToLEDs(findHigh(inputArrows)); 
-      turnLightsRed(start, start + 10);  
+      int start = mapArrowNumToLEDs(findHigh(inputArrows));
+      if (aInput[2] == 1) {
+        turnLightsRed(start, start + 25);  
+      } 
       delay(200);  
     } 
     
@@ -88,7 +108,7 @@ void sendInfo(int* aInput, int* aPressed){
     resetArrowsPressed(); 
     //    int start = mapArrowNumToLEDs(findHigh(inputArrows)); 
     //turn all the lights off 
-    turnLightsOff(0, 20);
+    turnLightsOff(0, 30);
 } 
 
 void readInfo(){ 
@@ -104,8 +124,8 @@ void readInfo(){
      
 //     Serial.println(convertArrayToString(inputArrows));
       int start = mapArrowNumToLEDs(findHigh(inputArrows)); 
-      if (inputArrows[0] ==1) { 
-          turnLightsBlue(start, start + 10);  
+      if (inputArrows[2] ==1) { 
+          turnLightsBlue(start, start + 25);  
       }
       inProgress = true; 
       //update previous time it was in this sending loop
@@ -123,14 +143,10 @@ void determinePadPress(float pressure, int arrowNum){
    arrowsPressed[arrowNum] = 1; 
    //if the arrow was meant to be pressed, make it green
    //otherwise, if the arrow was not meant to be pressed, make it red? 
-   int start = mapArrowNumToLEDs(arrowNum); 
-   if (findHigh(inputArrows) == arrowNum){
+//   int start = mapArrowNumToLEDs(arrowNum); 
+   if (arrowNum == 2){
         //turn led strip on because you got it correct 
-     turnLightsGreen(start, start + 10); 
-   }
-   else{ 
-     //Q: what happens if you hit the wrong pad?
-     turnLightsRed(start, start + 10); 
+     turnLightsGreen(0, 30); 
    }
   } 
 }
@@ -197,7 +213,7 @@ void resetArrowsPressed(){
 //LIGHT FUNCTIONS 
 void turnLightsGreen(int startLEDs, int endLEDs){ 
    for (int i = startLEDs; i < endLEDs; i++){ 
-    strip.setPixelColor(i, 10, 255, 5);
+    strip.setPixelColor(i, 0, 255, 5);
    }  
    strip.show(); 
 }
