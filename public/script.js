@@ -18,7 +18,6 @@ socket.on('keyboardGame', function (data) {
 		$('#whatDevice').text("**Using BOARD to Play")
 	}
 	keyboardGame = data;
-	console.log(keyboardGame);
 });
 
 function createGame (stepOrder, isKeyboardGame) {
@@ -30,15 +29,46 @@ function createGame (stepOrder, isKeyboardGame) {
 
 	var shuttle1 = $('.'+stepOrder[stepNum]);
 
-	console.log(keyboardGame);
 	if (isKeyboardGame) {
 		console.log("KEYBOARDGAME");
-		// .keyup(function(e) {
-		//     if (e.keyCode in map) {
-		//         map[e.keyCode] = false;
-		// 				$('#' + stepReverseKey[e.keyCode]).css({"backgroundColor": "#800080"});
-		//     }
-		// });
+		$(document).keydown(function(e) {
+	    switch(e.which) {
+	        case 37: // left
+						map[1] = true;
+						$('#left').css({"backgroundColor": "black"});
+						setTimeout(function(){
+							$('#left').css({"backgroundColor": "#800080"});
+							map[1] = false;
+						},1000);
+	        	break;
+	        case 38: // up
+						map[3] = true;
+						$('#up').css({"backgroundColor": "black"});
+						setTimeout(function(){
+							$('#up').css({"backgroundColor": "#800080"});
+							map[3] = false;
+						},1000);
+	        	break;
+	        case 39: // right
+						map[4] = true;
+						$('#right').css({"backgroundColor": "black"});
+						setTimeout(function(){
+							$('#right').css({"backgroundColor": "#800080"});
+							map[4] = false;
+						},1000);
+						break;
+	        case 40: // down
+						map[2] = true;
+						$('#down').css({"backgroundColor": "black"});
+						setTimeout(function(){
+							$('#down').css({"backgroundColor": "#800080"});
+							map[4] = false;
+						},1000);
+						break;
+	        default: return; // exit this handler for other keys
+	    }
+    	e.preventDefault(); // prevent the default action (scroll / move caret)
+		});
 	} else {
 		socket.on('data', function (data) {
 			console.log(data);
@@ -46,9 +76,7 @@ function createGame (stepOrder, isKeyboardGame) {
 				if (data.toString().charAt(j) == 1) {
 					map[j+1] = true;
 					$('#' + stepOrderSet[j]).css({"backgroundColor": "black"});
-				} else {
-					map[j+1] = false;
-					$('#' + stepOrderSet[j]).css({"backgroundColor": "#800080"});
+					setTimeout(function(){$('#' + stepOrderSet[j]).css({"backgroundColor": "#800080"}); },1000);
 				}
 			}
 			step = data;
@@ -75,12 +103,14 @@ function createGame (stepOrder, isKeyboardGame) {
 		var shuttle1 = $('.'+stepOrder[stepNum]);
 
 		if (stepNum == stepOrder.length) {
+			map = {1: false, 2: false, 3: false, 4: false};
 			var moving_arrow = TweenMax.to(shuttle1, 4, {
 				y: "-425px",
 				ease: Linear.easeNone,
 			});
 			socket.emit('message', stepOrder[stepNum]);
 		} else {
+			map = {1: false, 2: false, 3: false, 4: false};
 			var moving_arrow = TweenMax.to(shuttle1, 4, {
 				y: "-425px",
 				ease: Linear.easeNone,
