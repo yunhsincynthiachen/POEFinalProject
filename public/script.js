@@ -12,6 +12,11 @@ var playing = false;
 var keyboardGame;
 
 socket.on('keyboardGame', function (data) {
+	if (data) {
+		$('#whatDevice').text("**Using KEYBOARD to Play")
+	} else {
+		$('#whatDevice').text("**Using BOARD to Play")
+	}
 	keyboardGame = data;
 	console.log(keyboardGame);
 });

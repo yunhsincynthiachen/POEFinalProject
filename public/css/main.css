@@ -182,11 +182,15 @@ span#title {
 }
 
 .playButton {
-  width: 300px;
-  height: 140px;
+  width: 250px;
+  height: 100px;
 }
 
 .details {
-  width: 300px;
-  height: 120px;
+  width: 250px;
+  height: 80px;
+}
+
+#whatDevice {
+  font-size: 20px;
 }
