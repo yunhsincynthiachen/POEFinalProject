@@ -79,8 +79,8 @@ function createGame (stepOrder, isKeyboardGame) {
 			for (var j = 0; j < data.toString().length; j++) {
 				if (data.toString().charAt(j) == 1) {
 					map[j+1] = true;
-					$('#' + stepOrderSet[j]).css({"backgroundColor": "black"});
-					setTimeout(function(){$('#' + stepOrderSet[j]).css({"backgroundColor": "#800080"}); },1000);
+					// $('#' + stepOrderSet[j]).css({"backgroundColor": "black"});
+					// setTimeout(function(){$('#' + stepOrderSet[j]).css({"backgroundColor": "#800080"}); },1000);
 				}
 			}
 			step = data;
