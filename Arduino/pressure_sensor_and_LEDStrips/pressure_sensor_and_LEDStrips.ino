@@ -63,13 +63,13 @@ void loop(){
     //read left pressure and then record if it was pressed 
 //    delay(200);
     LeftPressure = analogRead(LeftSensorPin); 
-    delay(200);
+
     DownPressure = analogRead(DownSensorPin);
-    delay(200);
+//    delay(200);
     UpPressure = analogRead(UpSensorPin);
-    delay(200);
+//    delay(200);
     RightPressure = analogRead(RightSensorPin);
-    delay(200); 
+//    delay(200); 
 
     if (inputArrows[0] == 1){ 
       determinePadPress(LeftPressure, 0);
@@ -92,15 +92,28 @@ void loop(){
 void sendInfo(int* aInput, int* aPressed){ 
     String aPressedString = convertArrayToString(aPressed); 
     Serial.println(aPressedString);
+<<<<<<< HEAD
     delay(300);  
+=======
+    delay(10);  
+>>>>>>> 9113ab7a2e78c591e7836426d67ce83af6aad43a
     //if the time frame is over and they did not press the arrow they were supposed to, then make arrow red  
     if (!compareInputToOutput(aInput, aPressed)){
       //make led strip red cause they didn't hit it
       int start = 10; 
-      if (aInput[2] == 1) {
-        turnLightsRed(start, start + 5);  
+      if (inputArrows[0] == 1) {
+        turnLightsRed(0, 15);  
       } 
-      delay(200);  
+      else if (inputArrows[1] == 1) {
+        turnLightsRed(0, 7); 
+        turnLightsRed(23, 30);  
+      } 
+      else if (inputArrows[2] == 1) {
+        turnLightsRed(7, 21);  
+      } 
+      else if (inputArrows[3] == 1) {
+        turnLightsRed(15, 30);  
+      } 
     } 
     
     //clear arrows pressed
