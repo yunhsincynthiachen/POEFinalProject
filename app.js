@@ -31,6 +31,7 @@ io.sockets.on('connection', function (socket) {
       },function(error) {
        if(error)
         {
+          console.log("in error");
           usingKeyboard = true;
           socketConnection();
           console.log(usingKeyboard);
@@ -39,6 +40,7 @@ io.sockets.on('connection', function (socket) {
 
       usingKeyboard = false;
       socketConnection();
+      console.log(usingKeyboard);
       console.log("not using keyboard");
     }
   });
@@ -68,6 +70,7 @@ function socketConnection() {
     		var lastValue;
 
     		serialport.on('data', function(data){
+          console.log(data);
     			var step = data;
     			if(lastValue !== step){
     				socket.emit('data', step);

@@ -12,6 +12,7 @@
 	<link href="css/main.css" rel="stylesheet">
 	<link rel="shortcut icon" href="images/ddricon.png">
   <link href="https://fonts.googleapis.com/css?family=Audiowide|Source+Sans+Pro|VT323" rel="stylesheet">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 
 	<script src="/bower_components/socket.io-client/dist/socket.io.min.js"></script>
 	<script src="/bower_components/Processing.js/processing.min.js"></script>
@@ -23,6 +24,23 @@
     if (device != null) {
       socket.emit('changeSerialPort', device);
     }
+
+    $(function(){
+      $('.songPlayTamed').on( "click", function() {
+        // socket.emit('chooseSong', "cantBeTamed");
+        window.open("game.html?song=cantBeTamed","_self");
+      });
+
+      $('.songPlayJustDance').on( "click", function() {
+        // socket.emit('chooseSong', "justDance");
+        window.open("game.html?song=justDance","_self");
+      });
+
+      $('.songPlayWork').on( "click", function() {
+        // socket.emit('chooseSong', "workfromHome");
+        window.open("game.html?song=workFromHome","_self");
+      });
+    });
 	</script>
 </head>
 <body>
@@ -38,15 +56,25 @@
       Game Instructions: Just <b class="animate-text">STEP</b> on four arrowed pads on the board to match the arrows that scroll up the screen in time with a chosen song
     </p>
     <div class="buttondiv">
-      <a href="game.html">
-        <img class="playButton" src="images/playbutton.png" />
-      </a>
+      <!-- <a href="game.html"> -->
+        <!-- <img class="playButton" src="images/playbutton.png" /> -->
+        <div class="songPlayTamed">
+          <h2> > Play "Can't Be Tamed", by Miley Cyrus</h2>
+        </div>
+        <div class="songPlayJustDance">
+          <h2> > Play "Just Dance", by Lady Gaga</h2>
+        </div>
+        <div class="songPlayHome">
+          <h2> > Play "Work from Home", by Fifth Harmony</h2>
+        </div>
+
+      <!-- </a> -->
     </div>
-    <div class="buttondiv">
+    <!-- <div class="buttondiv">
       <a href="about.html">
         <img class="details" src="images/questionMark.png" />
       </a>
-    </div>
+    </div> -->
 	</div>
 </body>
 </html>
