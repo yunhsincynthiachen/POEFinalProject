@@ -59,17 +59,18 @@ void loop(){
       inProgress = false;  
 //      //then always send and then read 
       sendInfo(inputArrows, arrowsPressed); 
-//      readInfo(); 
     }
     //read left pressure and then record if it was pressed 
-    delay(200);
+//    delay(200);
     LeftPressure = analogRead(LeftSensorPin); 
     delay(200);
-    RightPressure = analogRead(RightSensorPin);
+    DownPressure = analogRead(DownSensorPin);
     delay(200);
     UpPressure = analogRead(UpSensorPin);
     delay(200);
-    DownPressure = analogRead(DownSensorPin);
+    RightPressure = analogRead(RightSensorPin);
+    delay(200); 
+
     if (inputArrows[0] == 1){ 
       determinePadPress(LeftPressure, 0);
     } else if (inputArrows[1] == 1) {
@@ -79,9 +80,6 @@ void loop(){
     } else if (inputArrows[3] == 1) {
       determinePadPress(RightPressure, 3);
     }
-  //read right pressure and then record if it was pressed 
-  //  DownPressure = analogRead(DownSensorPin);
-  //  determinePadPress(DownPressure, 1);  
   }
  
   if (!inProgress){ 
@@ -93,14 +91,14 @@ void loop(){
 
 void sendInfo(int* aInput, int* aPressed){ 
     String aPressedString = convertArrayToString(aPressed); 
-    Serial.println(aPressedString);
+    Serial.println("1111");
     delay(300);  
     //if the time frame is over and they did not press the arrow they were supposed to, then make arrow red  
     if (!compareInputToOutput(aInput, aPressed)){
       //make led strip red cause they didn't hit it
-      int start = mapArrowNumToLEDs(findHigh(inputArrows));
+      int start = 10; 
       if (aInput[2] == 1) {
-        turnLightsRed(start, start + 25);  
+        turnLightsRed(start, start + 5);  
       } 
       delay(200);  
     } 
@@ -115,26 +113,33 @@ void sendInfo(int* aInput, int* aPressed){
 void readInfo(){ 
   String contentString; 
   int content; 
-   if (Serial.available()>0) {
-//     content = Serial.parseInt(); 
+   if (Serial.available()>0) { 
      contentString = Serial.readString(); 
      inputArrows[0] = (int)(contentString.charAt(1)) - 48; 
      inputArrows[1] = (int)(contentString.charAt(2)) - 48;
      inputArrows[2] = (int)(contentString.charAt(3)) - 48;
      inputArrows[3] = (int)(contentString.charAt(4)) - 48;
      
-//     Serial.println(convertArrayToString(inputArrows));
-      int start = mapArrowNumToLEDs(findHigh(inputArrows)); 
-      if (inputArrows[2] ==1) { 
-          turnLightsBlue(start, start + 25);  
-      }
+     
+      if (inputArrows[0] == 1) {
+        turnLightsBlue(0, 15);  
+      } 
+      else if (inputArrows[1] == 1) {
+        turnLightsBlue(0, 7); 
+        turnLightsBlue(23, 30);  
+      } 
+      else if (inputArrows[2] == 1) {
+        turnLightsBlue(7, 21);  
+      } 
+      else if (inputArrows[3] == 1) {
+        turnLightsBlue(15, 30);  
+      } 
+      
       inProgress = true; 
       //update previous time it was in this sending loop
       previousTimeStamp = currentTimeStamp; 
    }
    
-//  Serial.println(convertArrayToString(inputArrows));  
-  //make arrows blue if they need to be pressed 
 } 
 
 void determinePadPress(float pressure, int arrowNum){
@@ -144,11 +149,20 @@ void determinePadPress(float pressure, int arrowNum){
    arrowsPressed[arrowNum] = 1; 
    //if the arrow was meant to be pressed, make it green
    //otherwise, if the arrow was not meant to be pressed, make it red? 
-//   int start = mapArrowNumToLEDs(arrowNum); 
-   if (arrowNum == 2){
-        //turn led strip on because you got it correct 
-     turnLightsGreen(0, 30); 
-   }
+ 
+      if (arrowNum == 1) {
+        turnLightsGreen(0, 15);  
+      } 
+      else if (arrowNum == 1) {
+        turnLightsGreen(0, 7); 
+        turnLightsGreen(23, 30);  
+      } 
+      else if (arrowNum == 1) {
+        turnLightsGreen(7, 21);  
+      } 
+      else if (arrowNum == 1) {
+        turnLightsGreen(15, 30);  
+      }   
   } 
 }
  
@@ -167,26 +181,12 @@ int compareInputToOutput(int *inputs, int *pressed){
 int findHigh(int* data){
   //find the only number in the array that is supposed to be pressed or is high  
   //this assumes only one will be high 
-  for (int i = 0; i < sizeof(data); i ++){ 
+  for (int i = 0; i < sizeof(data); i++){ 
    if(data[i] == 1){ 
       return i; 
    } 
   }
   return 5; 
-}
-
-int mapArrowNumToLEDs(int arrowNum){
-  //map the arrow number to where the LED strip should start to turn on 
-  //if left pad press turn on LEDs 0 -10 
-  //if down pad press, turn on LEDs 10 - 20 
-   switch(arrowNum){ 
-    case 0: 
-      return 0; 
-      break; 
-    case 1: 
-      return 10;
-      break; 
-   } 
 }
 
 String convertArrayToString(int data[]){ 
