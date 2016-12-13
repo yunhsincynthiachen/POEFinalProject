@@ -113,6 +113,7 @@ function createGame (stepOrder, isKeyboardGame) {
 				ease: Linear.easeNone,
 			});
 			if (!keyboardGame) {
+				console.log("SENDING MESSAGE");
 				socket.emit('message', stepOrder[stepNum]);
 			}
 		} else {
@@ -123,6 +124,7 @@ function createGame (stepOrder, isKeyboardGame) {
 				onComplete: complete,
 			});
 			if (!keyboardGame) {
+				console.log("SENDING MESSAGE");
 				socket.emit('message', stepOrder[stepNum]);
 			}		}
 	};
@@ -133,6 +135,7 @@ function createGame (stepOrder, isKeyboardGame) {
 		onComplete: complete,
 	});
 	if (!keyboardGame) {
+		console.log("SENDING MESSAGE");
 		socket.emit('message', stepOrder[stepNum]);
 	}}
 
