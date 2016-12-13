@@ -90,6 +90,7 @@ void loop(){
     readInfo();
   }  
 }
+
 void sendInfo(int* aInput, int* aPressed){ 
     String aPressedString = convertArrayToString(aPressed); 
     Serial.println(aPressedString);

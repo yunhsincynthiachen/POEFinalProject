@@ -8,7 +8,7 @@ var cantBeTamed = ["right", "right", "up", "up", "left", "left", "right", "right
 
 var justDance = ["none", "left", "left", "right", "right","left","up", "right", "left", "up", "up", "down", "down", "right", "right", "up", "up", "left","right", "right", "up", "up", "left","left", "left", "right", "right","left", "left", "right", "right", "down", "right", "none", "right", "up", "up","down","right", "right", "up","down","right", "right", "up"];
 
-var workfromHome = ["right", "right", "up", "up", "left", "left", "right", "right","left","up", "right", "left", "up", "up", "down", "down","right", "right", "up", "left","left", "left", "right", "right","left", "left", "right", "right", "down", "right", "none", "right", "up", "up","down","right", "right", "up","down","right", "right", "up"];
+var workFromHome = ["left", "right", "up", "up", "left", "left", "right", "right","left","up", "right", "left", "up", "up", "down", "down","right", "right", "up", "left","left", "left", "right", "right","left", "left", "right", "right", "down", "right", "none", "right", "up", "up","down","right", "right", "up","down","right", "right", "up"];
 
 var start = true;
 var playing = false;
