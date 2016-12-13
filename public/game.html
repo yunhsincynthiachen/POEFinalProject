@@ -18,7 +18,6 @@
 	<script src="/bower_components/Processing.js/processing.min.js"></script>
   <script src="/bower_components/gsap/src/uncompressed/TweenLite.js"></script>
   <script src="/bower_components/gsap/src/uncompressed/TweenMax.js"></script>
-  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.19.0/TweenMax.min.js"></script> -->
 	<script>
 		var socket = io.connect(window.location.hostname);
 		var step = 0;
@@ -55,8 +54,16 @@
       </div>
     </div>
 	</div>
-  <audio class="player-audio">
+  <audio class="player-audio-cantBeTamed">
     <source src="cantbetamed.mp3" type="audio/mpeg">
+  Your browser does not support the audio element.
+  </audio>
+  <audio class="player-audio-justDance">
+    <source src="justdance.mp3" type="audio/mpeg">
+  Your browser does not support the audio element.
+  </audio>
+  <audio class="player-audio-workFromHome">
+    <source src="workfromhome.mp3" type="audio/mpeg">
   Your browser does not support the audio element.
   </audio>
 	<script type="text/javascript" src="script.js"></script>

@@ -18,6 +18,11 @@
 	<script>
 		var socket = io.connect(window.location.hostname);
 		var step = 0;
+
+    var device = prompt("What's the serial port device name? (You can find out from the Serial Port Tools in your arduino program)", "/dev/ttyACM0");
+    if (device != null) {
+      socket.emit('changeSerialPort', device);
+    }
 	</script>
 </head>
 <body>
@@ -38,16 +43,10 @@
       </a>
     </div>
     <div class="buttondiv">
-      <a href="game.html">
+      <a href="about.html">
         <img class="details" src="images/questionMark.png" />
       </a>
     </div>
-		<!-- <form class="play-form" action="game.html">
-      <input class="playButton" type="image" src="images/playbutton.png" alt="Submit">
-		</form>
-    <form class="play-form" action="game.html">
-      <input class="details" type="image" src="images/questionMark.png" alt="Submit">
-    </form> -->
 	</div>
 </body>
 </html>

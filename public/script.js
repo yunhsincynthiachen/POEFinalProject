@@ -4,19 +4,23 @@ var map = {1: false, 2: false, 3: false, 4: false};
 var stepKey = {"left":1, "up":3, "down":2, "right":4};
 var stepReverseKey = {1:"left", 3:"up", 2:"down", 4:"right"};
 
-var cantBeTamed = ["right", "right", "up", "up", "left", "left", "right", "right","left","up"];
+var cantBeTamed = ["right", "right", "up", "up", "left", "left", "right", "right","left","up", "right", "left", "up", "up", "down", "down","right", "right", "up", "up", "left", "left", "right", "right", "up", "up", "left", "left", "right", "right","left","up", "right", "left", "up", "up", "down", "down"];
 
-// var cantBeTamed = ["left", "left", "left", "left", "left", "left", "left", "left", "left", "left", "left", "left", "left"];
+var justDance = ["none", "left", "left", "right", "right","left","up", "right", "left", "up", "up", "down", "down", "right", "right", "up", "up", "left","right", "right", "up", "up", "left","left", "left", "right", "right","left", "left", "right", "right", "down", "right", "none", "right", "up", "up","down","right", "right", "up","down","right", "right", "up"];
+
+var workfromHome = ["right", "right", "up", "up", "left", "left", "right", "right","left","up", "right", "left", "up", "up", "down", "down","right", "right", "up", "left","left", "left", "right", "right","left", "left", "right", "right", "down", "right", "none", "right", "up", "up","down","right", "right", "up","down","right", "right", "up"];
+
 var start = true;
 var playing = false;
 var keyboardGame;
 
 socket.on('keyboardGame', function (data) {
 	if (data) {
-		$('#whatDevice').text("**Using KEYBOARD to Play")
+		$('#whatDevice').text("**Using KEYBOARD to Play");
 	} else {
-		$('#whatDevice').text("**Using BOARD to Play")
+		$('#whatDevice').text("**Using BOARD to Play");
 	}
+	console.log(data);
 	keyboardGame = data;
 });
 
@@ -108,7 +112,9 @@ function createGame (stepOrder, isKeyboardGame) {
 				y: "-425px",
 				ease: Linear.easeNone,
 			});
-			socket.emit('message', stepOrder[stepNum]);
+			if (!keyboardGame) {
+				socket.emit('message', stepOrder[stepNum]);
+			}
 		} else {
 			map = {1: false, 2: false, 3: false, 4: false};
 			var moving_arrow = TweenMax.to(shuttle1, 4, {
@@ -116,8 +122,9 @@ function createGame (stepOrder, isKeyboardGame) {
 				ease: Linear.easeNone,
 				onComplete: complete,
 			});
-			socket.emit('message', stepOrder[stepNum]);
-		}
+			if (!keyboardGame) {
+				socket.emit('message', stepOrder[stepNum]);
+			}		}
 	};
 
 	var moving_arrow = TweenMax.to(shuttle1, 4, {
@@ -125,24 +132,25 @@ function createGame (stepOrder, isKeyboardGame) {
 	  ease: Linear.easeNone,
 		onComplete: complete,
 	});
-	socket.emit('message', stepOrder[stepNum]);
-}
+	if (!keyboardGame) {
+		socket.emit('message', stepOrder[stepNum]);
+	}}
 
 $(document).keydown(function(e) {
     if (e.keyCode == 32) {
 			if (playing && start) {
 				$(".playpause").fadeOut();
-				$(".player-audio").trigger("play");
+				$(".player-audio-cantBeTamed").trigger("play");
 				createGame(cantBeTamed, keyboardGame);
 				start = false;
 			} else if (playing && !start){
 				$(".playpause").fadeOut();
 				TweenMax.resumeAll(true, true);
-				$(".player-audio").trigger("play");
+				$(".player-audio-cantBeTamed").trigger("play");
 			} else {
 				$(".playpause").fadeIn();
 				TweenMax.pauseAll(true, true);
-				$(".player-audio").trigger("pause");
+				$(".player-audio-cantBeTamed").trigger("pause");
 			}
     }
 		playing = !playing;

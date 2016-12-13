@@ -8,6 +8,7 @@ var io = require('socket.io').listen(server);
 app.use(express.static(__dirname + '/public'));
 
 var usingKeyboard = false;
+var serialport;
 
 var keyDict = {
   "left" : "11000\n",
@@ -18,20 +19,34 @@ var keyDict = {
   "null" : "10000\n"
 }
 
-var serialport = new serialPort("/dev/ttyACM3",
-{
-  parser: serialPort.parsers.readline("\n")
-},function(error) {
- if(error)
-  {
-    usingKeyboard = true;
-    socketConnection();
-    console.log(usingKeyboard);
-  }
-});
+io.sockets.on('connection', function (socket) {
+  //Connecting to client
+  console.log('Socket connected');
+  socket.on('changeSerialPort', function (deviceName) {
+    console.log(deviceName);
+    if (deviceName !== null) {
+      serialport = new serialPort(deviceName,
+      {
+        parser: serialPort.parsers.readline("\n")
+      },function(error) {
+       if(error)
+        {
+          usingKeyboard = true;
+          socketConnection();
+          console.log(usingKeyboard);
+        }
+      });
+
+      usingKeyboard = false;
+      socketConnection();
+      console.log("not using keyboard");
+    }
+  });
+})
 
 function socketConnection() {
   if (usingKeyboard) {
+    console.log("using Keyboard");
     io.sockets.on('connection', function (socket) {
       //Connecting to client
       console.log('Socket connected');
@@ -39,6 +54,7 @@ function socketConnection() {
       socket.emit('keyboardGame', true);
     })
   } else {
+    console.log("using board");
     serialport.on('open', function(){
     	// Now server is connected to Arduino
     	console.log('Serial Port Opened');
