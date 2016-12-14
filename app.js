@@ -21,41 +21,43 @@ var keyDict = {
 
 io.sockets.on('connection', function (socket) {
   //Connecting to client
-  if (serialport) {
-    console.log(serialport);
-    console.log("Serial port already exists");
-  } else {
-    console.log('Socket connected');
-    socket.on('changeSerialPort', function (deviceName) {
-      console.log(deviceName);
-      if (deviceName !== null) {
-        serialport = new serialPort(deviceName,
+  console.log('Socket connected');
+  socket.on('changeSerialPort', function (deviceName) {
+    console.log(deviceName);
+    if (serialport) {
+      console.log(serialport);
+      console.log("Serial port already exists");
+      serialport.close(function (err) {
+          console.log('port closed', err);
+      });
+    }
+    if (deviceName !== null) {
+      serialport = new serialPort(deviceName,
+      {
+        parser: serialPort.parsers.readline("\n")
+      },function(error) {
+       if(error == "[Error: Error Resource temporarily unavailable Cannot lock port]")
         {
-          parser: serialPort.parsers.readline("\n")
-        },function(error) {
-         if(error == "[Error: Error Resource temporarily unavailable Cannot lock port]")
-          {
-            console.log(error);
-            usingKeyboard = true;
-            socketConnection();
-            console.log(usingKeyboard);
-          } else {
-            console.log("HERE AGAIN");
-            usingKeyboard = false;
-            socketConnection();
-            console.log(usingKeyboard);
-            console.log("not using keyboard");
-          }
-        });
+          console.log(error);
+          usingKeyboard = true;
+          socketConnection();
+          console.log(usingKeyboard);
+        } else {
+          console.log("HERE AGAIN");
+          usingKeyboard = false;
+          socketConnection();
+          console.log(usingKeyboard);
+          console.log("not using keyboard");
+        }
+      });
 
-        console.log("HERE AGAIN");
-        usingKeyboard = false;
-        socketConnection();
-        console.log(usingKeyboard);
-        console.log("not using keyboard");
-      }
-    });
-  }
+      console.log("HERE AGAIN");
+      usingKeyboard = false;
+      socketConnection();
+      console.log(usingKeyboard);
+      console.log("not using keyboard");
+    }
+  });
 })
 
 function socketConnection() {
