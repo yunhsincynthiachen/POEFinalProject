@@ -21,29 +21,41 @@ var keyDict = {
 
 io.sockets.on('connection', function (socket) {
   //Connecting to client
-  console.log('Socket connected');
-  socket.on('changeSerialPort', function (deviceName) {
-    console.log(deviceName);
-    if (deviceName !== null) {
-      serialport = new serialPort(deviceName,
-      {
-        parser: serialPort.parsers.readline("\n")
-      },function(error) {
-       if(error)
+  if (serialport) {
+    console.log(serialport);
+    console.log("Serial port already exists");
+  } else {
+    console.log('Socket connected');
+    socket.on('changeSerialPort', function (deviceName) {
+      console.log(deviceName);
+      if (deviceName !== null) {
+        serialport = new serialPort(deviceName,
         {
-          console.log("in error");
-          usingKeyboard = true;
-          socketConnection();
-          console.log(usingKeyboard);
-        }
-      });
+          parser: serialPort.parsers.readline("\n")
+        },function(error) {
+         if(error == "[Error: Error Resource temporarily unavailable Cannot lock port]")
+          {
+            console.log(error);
+            usingKeyboard = true;
+            socketConnection();
+            console.log(usingKeyboard);
+          } else {
+            console.log("HERE AGAIN");
+            usingKeyboard = false;
+            socketConnection();
+            console.log(usingKeyboard);
+            console.log("not using keyboard");
+          }
+        });
 
-      usingKeyboard = false;
-      socketConnection();
-      console.log(usingKeyboard);
-      console.log("not using keyboard");
-    }
-  });
+        console.log("HERE AGAIN");
+        usingKeyboard = false;
+        socketConnection();
+        console.log(usingKeyboard);
+        console.log("not using keyboard");
+      }
+    });
+  }
 })
 
 function socketConnection() {
@@ -72,9 +84,7 @@ function socketConnection() {
     		serialport.on('data', function(data){
           console.log(data);
     			var step = data;
-    			if(lastValue !== step){
-    				socket.emit('data', step);
-    			}
+    			socket.emit('data', step);
     			lastValue = step;
     		});
 

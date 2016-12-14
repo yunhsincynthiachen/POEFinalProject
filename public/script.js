@@ -81,11 +81,12 @@ function createGame (stepOrder, isKeyboardGame) {
 			for (var j = 0; j < data.toString().length; j++) {
 				if (data.toString().charAt(j) == 1) {
 					map[j+1] = true;
+					console.log(stepOrderSet[j]);
 					// $('#' + stepOrderSet[j]).css({"backgroundColor": "black"});
 					// setTimeout(function(){
 					// 	$('#' + stepOrderSet[j]).css({"backgroundColor": "#800080"});
 					// 	map[j+1] = false;
-					// },1000);
+					// },200);
 				}
 			}
 			step = data;
