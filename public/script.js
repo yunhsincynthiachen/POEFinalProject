@@ -14,6 +14,8 @@ var start = true;
 var playing = false;
 var keyboardGame;
 
+var song = (window.location.search).substring(6, (window.location.search).length);
+
 socket.on('keyboardGame', function (data) {
 	if (data) {
 		$('#whatDevice').text("**Using KEYBOARD to Play");
@@ -146,17 +148,17 @@ $(document).keydown(function(e) {
     if (e.keyCode == 32) {
 			if (playing && start) {
 				$(".playpause").fadeOut();
-				$(".player-audio-cantBeTamed").trigger("play");
-				createGame(cantBeTamed, keyboardGame);
+				$(".player-audio-" + song).trigger("play");
+				createGame(window[song], keyboardGame);
 				start = false;
 			} else if (playing && !start){
 				$(".playpause").fadeOut();
 				TweenMax.resumeAll(true, true);
-				$(".player-audio-cantBeTamed").trigger("play");
+				$(".player-audio-" + song).trigger("play");
 			} else {
 				$(".playpause").fadeIn();
 				TweenMax.pauseAll(true, true);
-				$(".player-audio-cantBeTamed").trigger("pause");
+				$(".player-audio-" + song).trigger("pause");
 			}
     }
 		playing = !playing;

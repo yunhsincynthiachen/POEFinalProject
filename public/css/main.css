@@ -178,7 +178,7 @@ span#title {
 
 .buttondiv {
   width: 100%;
-  padding-left: 30%
+  text-align: center;
 }
 
 .playButton {
@@ -193,4 +193,24 @@ span#title {
 
 #whatDevice {
   font-size: 20px;
+}
+
+
+#songOption {
+    display:inline-block;
+    color:#444;
+    border:1px solid #ff6e48;
+    background:#ff6e48;
+    box-shadow: 0 0 5px -1px rgba(0,0,0,0.2);
+    cursor:pointer;
+    width: 50%;
+    vertical-align:middle;
+    padding: 5px;
+    text-align: center;
+    margin: 1px;
+}
+
+#songOption:hover {
+    color:black;
+    box-shadow: 0 0 5px -1px rgba(0,0,0,0.6);
 }
