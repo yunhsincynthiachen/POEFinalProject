@@ -58,7 +58,7 @@ void loop(){
     if ((currentTimeStamp - previousTimeStamp) >= SENDINTERVAL){
       inProgress = false;  
 //      //then always send and then read 
-      sendInfo(inputArrows, arrowsPressed); 
+      sendInfo(); 
     }
     //read left pressure and then record if it was pressed 
 //    delay(200);
@@ -89,18 +89,13 @@ void loop(){
   }  
 }
 
-void sendInfo(int* aInput, int* aPressed){ 
-    String aPressedString = convertArrayToString(aPressed); 
+void sendInfo(){ 
+    String aPressedString = convertArrayToString(arrowsPressed); 
     Serial.println(aPressedString);
-<<<<<<< HEAD
-    delay(300);  
-=======
     delay(10);  
->>>>>>> 9113ab7a2e78c591e7836426d67ce83af6aad43a
     //if the time frame is over and they did not press the arrow they were supposed to, then make arrow red  
-    if (!compareInputToOutput(aInput, aPressed)){
+    if (!compareInputToOutput()){
       //make led strip red cause they didn't hit it
-      int start = 10; 
       if (inputArrows[0] == 1) {
         turnLightsRed(0, 15);  
       } 
@@ -115,6 +110,7 @@ void sendInfo(int* aInput, int* aPressed){
         turnLightsRed(15, 30);  
       } 
     } 
+    delay(50); 
     
     //clear arrows pressed
     resetArrowsPressed(); 
@@ -163,27 +159,27 @@ void determinePadPress(float pressure, int arrowNum){
    //if the arrow was meant to be pressed, make it green
    //otherwise, if the arrow was not meant to be pressed, make it red? 
  
-      if (arrowNum == 1) {
+      if (inputArrows[0] == 1) {
         turnLightsGreen(0, 15);  
       } 
-      else if (arrowNum == 1) {
+      else if (inputArrows[1] == 1) {
         turnLightsGreen(0, 7); 
         turnLightsGreen(23, 30);  
       } 
-      else if (arrowNum == 1) {
+      else if (inputArrows[2] == 1) {
         turnLightsGreen(7, 21);  
       } 
-      else if (arrowNum == 1) {
+      else if (inputArrows[3] == 1) {
         turnLightsGreen(15, 30);  
       }   
   } 
 }
  
-int compareInputToOutput(int *inputs, int *pressed){
+int compareInputToOutput(){
   //check if the input array matches what I pressed 
   //return true if the inputs equal the pressed, otherwise return false 
   for (int i = 0; i <4; i++){ 
-    if (inputs[i] != pressed[i]){ 
+    if (inputArrows[i] != arrowsPressed[i]){ 
       return false; 
     }  
   } 
@@ -253,3 +249,4 @@ void turnLightsOff(int startLEDs, int endLEDs){
    }
    strip.show(); 
 }
+
