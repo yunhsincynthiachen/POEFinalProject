@@ -39,8 +39,12 @@ io.sockets.on('connection', function (socket) {
       {
         parser: serialPort.parsers.readline("\n") //parser to make sure string name can be accepted
       },function(error) {
-       if(error == "[Error: Error Resource temporarily unavailable Cannot lock port]") //If not due to the absence of a port, use keyboard
+        var stringError = String(error);
+        if(stringError == "[Error: Error Resource temporarily unavailable Cannot lock port]") //If not due to the absence of a port, use keyboard
         {
+          usingKeyboard = true;
+          socketConnection();
+        } else if (stringError.indexOf("No such file") !== -1) {
           usingKeyboard = true;
           socketConnection();
         } else { //If there is a different error, don't use keyboard because it's a serialport issue
